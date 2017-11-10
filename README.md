@@ -12,10 +12,9 @@ Cli version of this called `cavity-cli` located in this repo. The tool is 2x tim
 Tool has some configuration option, but defaults are somewhat perfect. CLI tool has a lot of `.unwrap()` calls. Very unscientific benchmark:
 
 ```
- $  time target/release/cavity-cli  10G test.wat
+ $ time target/release/cavity-cli  10G test.wat
 target/release/cavity-cli 10G test.wat  0.00s user 9.92s system 49% cpu 20.110 total
- @ac-book.local   2:09PM  ~/Dev/Heaven/cavity/cavity-cli   master 
- $  time mkfile 10G test2
+ $ time mkfile 10G test2.wat
 mkfile 10G test2.wat  1.83s user 31.84s system 87% cpu 38.339 total
 ```
 
