@@ -86,10 +86,10 @@ fn main() {
         _ => unreachable!(),
     };
 
-    let mut size_mut = matches.value_of("SIZE").unwrap().into();
+    let size_mut = matches.value_of("SIZE").unwrap().into();
     let size = parse_size(size_mut);
 
-    let mut cs_mut = matches.value_of("chunk").unwrap().into();
+    let cs_mut = matches.value_of("chunk").unwrap().into();
     let cs = parse_size(cs_mut);
 
 
@@ -98,5 +98,5 @@ fn main() {
         panic!("File exists. Use  --force to overwrite.");
     }
     let mut file = File::create(path).unwrap();
-    fill(size, Some(cs), mode, &mut file);
+    fill(size, Some(cs), mode, &mut file).unwrap();
 }

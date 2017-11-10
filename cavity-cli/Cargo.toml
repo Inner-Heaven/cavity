@@ -5,7 +5,7 @@ authors = ["Andrey Cherkashin <with.out@me.com>"]
 license = "BSD-2-Clause"
 description = "Create files padded with zeros. Alternatinve to macOS's mkfile."
 repository = "https://github.com/Inner-Heaven/cavity"
-readme = "README.md"
+readme = "../README.md"
 categories = ["command-line-utilities"]
 
 [dependencies]
