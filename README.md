@@ -1,20 +1,22 @@
+## Cavity
+
+[![Crates.io](https://img.shields.io/crates/v/cavity.svg)](https://crates.io/crates/cavity)
 Very small library to create files. It's an alternative to macOS's
 `mkfile(8)` that works on everything that has rust's std.
 I have no idea how fast or perfomant this is, so good luck.
 
-# Arguments
 
-* `how_many`       — How many megabytes to write. It can be either in
-megabytes or gigabytes
+## Installation
 
-* `buffer_size`    — Size of chuck in megabytes. Default value is 16. Meaning empty vector with a size of 16 megabytes will be create in memory
+`cavity` is available on crates.io and can be included in your Cargo enabled project like this:
 
-* `write_mode`     — It can either implicitly flush after each chuck or
-just once at the end.
+```
+[dependencies]
+cavity = "1.0.0"
+```
 
-* `file`           — A Writer to write to. Doesn't have to be a file.
-
-# Example
+## Example
+Read the [docs](https://docs.rs/libnv).
 
 ```rust
 use cavity::{fill, Bytes, WriteMode};
