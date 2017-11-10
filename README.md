@@ -1,6 +1,7 @@
+[![Crates.io](https://img.shields.io/crates/v/cavity.svg)](https://crates.io/crates/cavity)
+
 ## Cavity
 
-[![Crates.io](https://img.shields.io/crates/v/cavity.svg)](https://crates.io/crates/cavity)
 Very small library to create files. It's an alternative to macOS's
 `mkfile(8)` that works on everything that has rust's std.
 I have no idea how fast or perfomant this is, so good luck.
@@ -16,7 +17,7 @@ cavity = "1.0.0"
 ```
 
 ## Example
-Read the [docs](https://docs.rs/libnv).
+Read the ["docs"](https://docs.rs/libnv).
 
 ```rust
 use cavity::{fill, Bytes, WriteMode};
