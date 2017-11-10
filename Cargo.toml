@@ -1,0 +1,14 @@
+[package]
+name = "cavity"
+version = "1.0.0"
+authors = ["Andrey Cherkashin <with.out@me.com>"]
+license = "BSD-2-Clause"
+description = "Create zeroed files from rust"
+repository = "https://github.com/Inner-Heaven/cavity"
+readme = "README.md"
+categories = ["filesystem"]
+
+[badges]
+maintenance = { status = "experimental" }
+
+[dependencies]
