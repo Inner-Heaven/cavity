@@ -5,7 +5,9 @@
 /// # Arguments
 /// * `how_many`       — How many megabytes to write. It can be either in
 /// megabytes or gigabytes
-///  * `buffer_size`    — Size of chuck in megabytes. Default value is 16. Meaning empty vector with a size of 16 megabytes will be create in memory
+///  * `buffer_size`    — Size of chuck in megabytes.
+/// Default value is 16. Meaning empty vector with a size of 16 megabytes will
+/// be create in memory
 /// * `write_mode`     — It can either implicitly flush after each chuck or
 /// just once at the end.
 ///  * `file`           — A Writer to write to. Doesn't have to be a file.
@@ -21,9 +23,9 @@
 use std::io::{Result as IoResult, Write};
 
 /// Default buffer size.
-static BUF_SIZE_MB: usize = 16;
+static BUF_SIZE_KB: usize = 512;
 
-static MEGABYTE_NUL: [u8; 1000 * 1000] = [0; 1000 * 1000];
+static KILOBYTE_NUL: [u8; 1024] = [0; 1024];
 
 /// What writing mode to use.
 #[derive(Clone, Eq, Ord, PartialEq, PartialOrd, Debug)]
@@ -37,6 +39,7 @@ pub enum WriteMode {
 /// is 1000 bytes.
 #[derive(Clone, Eq, Ord, PartialEq, PartialOrd, Debug)]
 pub enum Bytes {
+    KiloBytes(usize),
     MegaBytes(usize),
     GigaBytes(usize),
 }
@@ -45,19 +48,43 @@ impl Bytes {
     /// Return size in bytes.
     pub fn as_bytes(&self) -> usize {
         return match *self {
-                   Bytes::MegaBytes(e) => e * 1000 * 1000,
-                   Bytes::GigaBytes(e) => e * 1000 * 1000 * 1000,
+                   Bytes::KiloBytes(e) => e * 1024,
+                   Bytes::MegaBytes(e) => e * 1024 * 1024,
+                   Bytes::GigaBytes(e) => e * 1024 * 1024 * 1024,
                };
     }
-    /// Return as size in megabyges.
-    pub fn as_megabytes(&self) -> usize {
-        return match *self {
-                   Bytes::MegaBytes(e) => e,
-                   Bytes::GigaBytes(e) => 1000 / e,
-               };
-    }
+
+    // Return as size in kilobytes.
+    pub fn as_kilobytes(&self) -> usize { self.as_bytes() / 1024 }
+
+    // Return as size in megabytes.
+    pub fn as_megabytes(&self) -> usize { self.as_kilobytes() / 1024 }
 }
 
+fn fill_big<W: Write>(how_many: Bytes,
+                      buffer_size: Bytes,
+                      write_mode: WriteMode,
+                      file: &mut W)
+                      -> IoResult<()> {
+    // If using other than default size buffer allocate it on heap.
+    let buf = vec![0; buffer_size.as_bytes()];
+    let number_of_writes = (how_many.as_bytes() as f64 / buf.len() as f64).floor() as usize;
+
+    for _ in 0..number_of_writes {
+        match write_mode {
+            WriteMode::FlushEvery => file.write_all(buf.as_slice()).map(|_| ())?,
+            WriteMode::FlushOnce => file.write(buf.as_slice()).map(|_| ())?,
+        }
+    }
+
+
+    let kilos_left = how_many.as_kilobytes() - (buffer_size.as_kilobytes() * number_of_writes);
+
+    for _ in 0..kilos_left {
+        file.write(&KILOBYTE_NUL).map(|_| ())?;
+    }
+    Ok(())
+}
 /// Fill writer with as many zeroes as you want. First it writes in chunks of
 /// buffer_size, then it writes megabyte by megabyte.
 pub fn fill<W: Write>(how_many: Bytes,
@@ -65,25 +92,14 @@ pub fn fill<W: Write>(how_many: Bytes,
                       write_mode: WriteMode,
                       file: &mut W)
                       -> IoResult<()> {
-    let buf_size = buffer_size.unwrap_or(Bytes::MegaBytes(BUF_SIZE_MB));
-    let mut buf = Vec::with_capacity(buf_size.as_bytes());
-    for _ in 0..buf_size.as_megabytes() {
-        buf.extend_from_slice(&MEGABYTE_NUL);
-    }
 
-    let number_of_writes = (how_many.as_megabytes() as f64 / BUF_SIZE_MB as f64).floor() as usize;
 
-    for _ in 0..number_of_writes {
-        match write_mode {
-            WriteMode::FlushEvery => file.write_all(&buf).map(|_| ())?,
-            WriteMode::FlushOnce => file.write(&buf).map(|_| ())?,
-        }
-    }
-
-    let megabytes_left = how_many.as_megabytes() - (buf_size.as_megabytes() * number_of_writes);
-
-    for _ in 0..megabytes_left {
-        file.write_all(&MEGABYTE_NUL).map(|_| ())?;
+    let buf_size = buffer_size.unwrap_or(Bytes::KiloBytes(BUF_SIZE_KB));
+    if how_many < buf_size {
+        fill_big(how_many, buf_size, write_mode, file)?
+    } else {
+        let buf = vec![0; how_many.as_bytes()];
+        file.write_all(&buf).map(|_| ())?;
     }
     file.flush()
 }

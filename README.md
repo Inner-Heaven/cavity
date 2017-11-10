@@ -3,8 +3,8 @@
 ## Cavity
 
 Very small library to create files. It's an alternative to macOS's
-`mkfile(8)` that works on everything that has rust's std.
-I have no idea how fast or perfomant this is, so good luck.
+`mkfile(8)` that works on everything that has rust's std. [Unlike](http://blog.metaobject.com/2017/02/mkfile8-is-severely-syscall-limited-on.html) `mkfile`
+this uses configurable chunksize and has default of 512Kb. 
 
 
 ## Installation
@@ -13,7 +13,7 @@ I have no idea how fast or perfomant this is, so good luck.
 
 ```
 [dependencies]
-cavity = "1.0.0"
+cavity = "1.1.0"
 ```
 
 ## Example
