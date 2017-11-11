@@ -3,12 +3,12 @@
 ## Cavity
 
 Very small library to create files. It's an alternative to macOS's
-`mkfile(8)` that works on everything that has rust's std. [Unlike](mkfile_bad) `mkfile(8)`
+`mkfile(8)` that works on everything that has rust's std. [Unlike][mkfile_bad] `mkfile(8)`
 this uses configurable chunksize and has default of 512Kb. 
 
 ## CLI tool
 
-Cli version of this called `cavity-cli` located in this repo. The tool is 2x times faster than `mkfile(8)`. Don't think it's faster because its rust. [Read this instead](mkfile_bad).
+Cli version of this called `cavity-cli` located in this repo. The tool is 2x times faster than `mkfile(8)`. Don't think it's faster because its rust. [Read this instead][mkfile_bad].
 Tool has some configuration option, but defaults are somewhat perfect. CLI tool has a lot of `.unwrap()` calls. Very unscientific benchmark:
 
 ```
