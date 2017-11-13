@@ -95,8 +95,9 @@ fn main() {
 
     let path = Path::new(matches.value_of("FILE").unwrap());
     if !matches.is_present("force") && path.exists() {
-        panic!("File exists. Use  --force to overwrite.");
+        eprintln!("File exists. Use  --force to overwrite.");
+    } else {
+        let mut file = File::create(path).unwrap();
+        fill(size, Some(cs), mode, &mut file).unwrap();
     }
-    let mut file = File::create(path).unwrap();
-    fill(size, Some(cs), mode, &mut file).unwrap();
 }
